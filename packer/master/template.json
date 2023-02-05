@@ -1,0 +1,48 @@
+{
+    "variables" : {
+        "region" : "eu-central-1",
+        "aws_profile": "skyglass",
+        "source_ami" : "ami-076309742d466ad69",
+        "instance_type": "t2.large",
+        "ssh_key": "../../../ssh-jenkins"
+    },
+    "builders" : [
+        {
+            "type" : "amazon-ebs",
+            "profile" : "{{user `aws_profile`}}",
+            "region" : "{{user `region`}}",
+            "instance_type" : "{{user `instance_type`}}",
+            "source_ami" : "{{user `source_ami`}}",
+            "ssh_username" : "ec2-user",
+            "ami_name" : "jenkins-master-2.204.1",
+            "ami_description" : "Amazon Linux Image with Jenkins Server",
+            "run_tags" : {
+                "Name" : "packer-builder"
+            },
+            "subnet_id" : "subnet-5979ad15",
+            "vpc_id" : "vpc-fcad0f96"
+        }
+    ],
+    "provisioners" : [
+        {
+            "type" : "file",
+            "source" : "./scripts",
+            "destination" : "/tmp/"
+        },
+        {
+            "type" : "file",
+            "source" : "./config",
+            "destination" : "/tmp/"
+        },
+        {
+            "type" : "file",
+            "source" : "{{user `ssh_key`}}",
+            "destination" : "/tmp/id_rsa"
+        },
+        {
+            "type" : "shell",
+            "script" : "./setup.sh",
+            "execute_command" : "sudo -E -S sh '{{ .Path }}'"
+        }
+    ]
+}

@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-online-api-deployment
+  namespace: default
+  labels:
+    app: bank-online-api-deployment
+spec:
+  selector:
+    matchLabels:
+      app: bank-online-api-deployment
+  template:
+    metadata:
+      labels:
+        app: bank-online-api-deployment
+    spec:
+      containers:
+        - name: bank-online-api-service
+          image: skyglass/bank-online-api:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://bank-mysql:3306/eazybank"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: bank-online-api-deployment-hpa
+  namespace: default
+  labels:
+    app: bank-online-api-deployment
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: bank-online-api-deployment
+    apiVersion: apps/v1
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+        
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-online-ui-deployment
+  namespace: default
+  labels:
+    app: bank-online-ui-deployment
+spec:
+  selector:
+    matchLabels:
+      app: bank-online-ui-deployment
+  template:
+    metadata:
+      labels:
+        app: bank-online-ui-deployment
+    spec:
+      containers:
+        - name: bank-online-ui-service
+          image: skyglass/bank-online-ui-service:1.0-SNAPSHOT"
+          ports:
+            - containerPort: 4200          
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: bank-online-ui-deployment-hpa
+  namespace: default
+  labels:
+    app: bank-online-ui-deployment
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: bank-online-ui-deployment
+    apiVersion: apps/v1
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
