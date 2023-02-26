@@ -51,3 +51,11 @@ bash /tmp/config/install-plugins.sh
 systemctl daemon-reload
 systemctl start jenkins
 systemctl status jenkins
+
+echo "Install Docker engine"
+yum install docker -y
+systemctl daemon-reload
+systemctl restart docker
+systemctl enable docker
+usermod -a -G docker jenkins
+# chmod 777 /var/run/docker.sock
