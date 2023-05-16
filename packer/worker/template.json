@@ -4,7 +4,7 @@
         "aws_profile": "skyglass",
         "source_ami" : "ami-076309742d466ad69",
         "instance_type": "t2.medium",
-        "ssh_key": "../../../ssh-jenkins"
+        "ssh_key": "../../../../ssh-jenkins"
     },
     "builders" : [
         {
