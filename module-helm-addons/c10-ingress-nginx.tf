@@ -5,10 +5,17 @@ resource "kubernetes_ingress_v1" "ingress" {
     annotations = {
       "nginx.ingress.kubernetes.io/rewrite-target" = "/"
       "kubernetes.io/ingress.class" =  "nginx"
+      "nginx.ingress.kubernetes.io/server-snippet" =  <<EOF
+        location ~* "^/actuator" {
+          deny all;
+          return 403;
+        }
+      EOF
     }
   }
 
   spec {
+    ingress_class_name = "nginx"
 
     default_backend {
      
@@ -41,15 +48,15 @@ resource "kubernetes_ingress_v1" "ingress" {
     }
 
     rule {
-      host = "bank-api.greeta.net"
+      host = "books.greeta.net"
       http {
 
         path {
           backend {
             service {
-              name = "bank-api"
+              name = "edge-service"
               port {
-                number = 8081
+                number = 80
               }
             }
           }
@@ -58,26 +65,6 @@ resource "kubernetes_ingress_v1" "ingress" {
           path_type = "Prefix"
         }
       }
-    } 
-
-    rule {
-      host = "bank.greeta.net"
-      http {
-
-        path {
-          backend {
-            service {
-              name = "bank-ui"
-              port {
-                number = 4200
-              }
-            }
-          }
-
-          path = "/"
-          path_type = "Prefix"
-        }
-      }
-    }          
+    }
   }
 }

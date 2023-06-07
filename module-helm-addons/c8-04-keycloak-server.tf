@@ -26,7 +26,7 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
         volume {
           name = "keycloak-server-config-volume"    
           config_map {
-            name = kubernetes_config_map_v1.keycloak_server_config_map.metadata.0.name
+            name = "keycloak-server-config"
           }
         }
         container {
