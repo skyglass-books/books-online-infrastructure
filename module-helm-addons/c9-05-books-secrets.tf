@@ -22,3 +22,15 @@ resource "kubernetes_secret" "polar_postgres_order_credentials" {
     "spring.r2dbc.password"     = "password"
   }
 }
+
+resource "kubernetes_secret" "polar_redis_credentials" {
+  metadata {
+    name = "polar-redis-credentials"
+  }
+
+  data = {
+    "spring.redis.host"     = "polar-redis"
+    "spring.redis.port"     = "6379"
+    "spring.redis.username" = "default"
+  }
+}

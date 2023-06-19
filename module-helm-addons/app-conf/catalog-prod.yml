@@ -1,0 +1,5 @@
+polar:
+  greeting: Welcome to our production book catalog from a production Kubernetes environment synchronized with Argo CD!
+spring:
+  config:
+    import: configtree:/workspace/secrets/*/
