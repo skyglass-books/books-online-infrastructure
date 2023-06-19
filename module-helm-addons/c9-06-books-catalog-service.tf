@@ -1,4 +1,4 @@
-resource "kubernetes_config_map" "catalog_config" {
+resource "kubernetes_config_map_v1" "catalog_config" {
   metadata {
     name      = "catalog-config"
     labels = {
@@ -15,7 +15,10 @@ resource "kubernetes_config_map" "catalog_config" {
 }
 
 
-resource "kubernetes_deployment" "catalog_service_deployment" {
+resource "kubernetes_deployment_v1" "catalog_service_deployment" {
+  depends_on = [kubernetes_deployment_v1.books_postgres_deployment,
+                kubernetes_deployment_v1.books_rabbitmq_deployment,
+                kubernetes_deployment_v1.books_redis_deployment]
   metadata {
     name = "catalog-service"
 
@@ -49,8 +52,8 @@ resource "kubernetes_deployment" "catalog_service_deployment" {
       spec {
         container {
           name = "catalog-service"
-          image = "catalog-service"
-          image_pull_policy = "IfNotPresent"
+          image = "ghcr.io/skyglass-books/catalog-service:c0b3de08c2b72df23103ad3ba4ee366cbc8f7e41"
+          image_pull_policy = "Always"
 
           env {
             name  = "BPL_JVM_THREAD_COUNT"

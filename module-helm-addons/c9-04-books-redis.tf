@@ -1,4 +1,4 @@
-resource "kubernetes_deployment" "books_redis" {
+resource "kubernetes_deployment_v1" "books_redis" {
   metadata {
     name = "books-redis"
     labels = {
@@ -41,7 +41,7 @@ resource "kubernetes_deployment" "books_redis" {
   }
 }
 
-resource "kubernetes_service" "books_redis" {
+resource "kubernetes_service_v1" "books_redis" {
   metadata {
     name = "books-redis"
     labels = {

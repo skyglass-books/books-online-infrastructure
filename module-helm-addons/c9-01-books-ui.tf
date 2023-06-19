@@ -1,5 +1,5 @@
 resource "kubernetes_deployment_v1" "books_ui_deployment" {
-  depends_on = [kubernetes_deployment_v1.books_ui_deployment]
+  depends_on = [kubernetes_deployment_v1.catalog_service_deployment]
   metadata {
     name = "books-ui"
     labels = {

@@ -1,4 +1,4 @@
-resource "kubernetes_config_map" "books_postgres_config" {
+resource "kubernetes_config_map_v1" "books_postgres_config" {
   metadata {
     name = "books-postgres-config"
 
@@ -15,7 +15,7 @@ resource "kubernetes_config_map" "books_postgres_config" {
   }
 }
 
-resource "kubernetes_deployment" "books_postgres" {
+resource "kubernetes_deployment_v1" "books_postgres" {
   metadata {
     name = "books-postgres"
 
@@ -75,7 +75,7 @@ resource "kubernetes_deployment" "books_postgres" {
           name = "books-postgres-config-volume"
 
           config_map {
-            name = kubernetes_config_map.books_postgres_config.metadata[0].name
+            name = kubernetes_config_map_v1.books_postgres_config.metadata[0].name
           }
         }
       }
@@ -83,7 +83,7 @@ resource "kubernetes_deployment" "books_postgres" {
   }
 }
 
-resource "kubernetes_service" "books_postgres" {
+resource "kubernetes_service_v1" "books_postgres" {
   metadata {
     name = "books-postgres"
 

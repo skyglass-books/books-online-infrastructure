@@ -1,21 +1,24 @@
-resource "kubernetes_config_map" "catalog_config" {
+resource "kubernetes_config_map_v1" "edge_config" {
   metadata {
-    name      = "catalog-config"
+    name      = "edge-config"
     labels = {
-      app = "catalog-service"
+      app = "edge-service"
     }
   }
 
   data = {
-    "application.yml" = file("${path.module}/app-conf/catalog.yml")
-    "application-prod.yml" = file("${path.module}/app-conf/catalog-prod.yml")
+    "application.yml" = file("${path.module}/app-conf/edge.yml")
+    "application-prod.yml" = file("${path.module}/app-conf/edge-prod.yml")
   }
 
   merge_behavior = "merge"
 }
 
 
-resource "kubernetes_deployment" "edge_service" {
+resource "kubernetes_deployment_v1" "edge_service" {
+  depends_on = [kubernetes_deployment_v1.books_postgres_deployment,
+        kubernetes_deployment_v1.books_rabbitmq_deployment,
+        kubernetes_deployment_v1.books_redis_deployment]
   metadata {
     name = "edge-service"
     labels = {
@@ -47,7 +50,8 @@ resource "kubernetes_deployment" "edge_service" {
       spec {
         container {
           name  = "edge-service"
-          image = "edge-service"
+          image = "ghcr.io/skyglass-books/edge-service:a3ce4ab44e41d2e6eed02d3c3b64e91a855b49f5"
+          image_pull_policy = "Always"
 
           lifecycle {
             pre_stop {
@@ -78,8 +82,8 @@ resource "kubernetes_deployment" "edge_service" {
           }          
 
           env {
-            name  = "CATALOG_SERVICE_URL"
-            value = "http://catalog-service"
+            name  = "edge_SERVICE_URL"
+            value = "http://edge-service"
           }
 
           env {
@@ -160,9 +164,9 @@ resource "kubernetes_deployment" "edge_service" {
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler_v1" "catalog_service_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler_v1" "edge_service_hpa" {
   metadata {
-    name = "catalog-service-hpa"
+    name = "edge-service-hpa"
   }
   spec {
     max_replicas = 2
@@ -170,22 +174,22 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "catalog_service_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.catalog_service_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.edge_service_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 50
   }
 }
 
-resource "kubernetes_service_v1" "catalog_service_service" {
+resource "kubernetes_service_v1" "edge_service_service" {
   metadata {
-    name = "catalog-service"
+    name = "edge-service"
   }
   spec {
     selector = {
-      app = "catalog-service"
+      app = "edge-service"
     }
     port {
-      port = 9001
+      port = 9000
     }
   }
 }

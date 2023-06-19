@@ -1,4 +1,4 @@
-resource "kubernetes_secret" "polar_postgres_catalog_credentials" {
+resource "kubernetes_secret_v1" "polar_postgres_catalog_credentials" {
   metadata {
     name = "polar-postgres-catalog-credentials"
   }
@@ -10,7 +10,7 @@ resource "kubernetes_secret" "polar_postgres_catalog_credentials" {
   }
 }
 
-resource "kubernetes_secret" "polar_postgres_order_credentials" {
+resource "kubernetes_secret_v1" "polar_postgres_order_credentials" {
   metadata {
     name = "polar-postgres-order-credentials"
   }
@@ -23,7 +23,7 @@ resource "kubernetes_secret" "polar_postgres_order_credentials" {
   }
 }
 
-resource "kubernetes_secret" "polar_redis_credentials" {
+resource "kubernetes_secret_v1" "polar_redis_credentials" {
   metadata {
     name = "polar-redis-credentials"
   }

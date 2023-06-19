@@ -1,21 +1,24 @@
-resource "kubernetes_config_map" "catalog_config" {
+resource "kubernetes_config_map_v1" "dispatcher_config" {
   metadata {
-    name      = "catalog-config"
+    name      = "dispatcher-config"
     labels = {
-      app = "catalog-service"
+      app = "dispatcher-service"
     }
   }
 
   data = {
-    "application.yml" = file("${path.module}/app-conf/catalog.yml")
-    "application-prod.yml" = file("${path.module}/app-conf/catalog-prod.yml")
+    "application.yml" = file("${path.module}/app-conf/dispatcher.yml")
+    "application-prod.yml" = file("${path.module}/app-conf/dispatcher-prod.yml")
   }
 
   merge_behavior = "merge"
 }
 
 
-resource "kubernetes_deployment" "dispatcher_service" {
+resource "kubernetes_deployment_v1" "dispatcher_service" {
+  depends_on = [kubernetes_deployment_v1.books_postgres_deployment,
+                kubernetes_deployment_v1.books_rabbitmq_deployment,
+                kubernetes_deployment_v1.books_redis_deployment]    
   metadata {
     name = "dispatcher-service"
     labels = {
@@ -47,8 +50,8 @@ resource "kubernetes_deployment" "dispatcher_service" {
       spec {
         container {
           name  = "dispatcher-service"
-          image = "dispatcher-service"
-          image_pull_policy = "IfNotPresent"
+          image = "ghcr.io/skyglass-books/dispatcher-service:3722d5e6156818e7fe4fadf67e509bfccf206ca9"
+          image_pull_policy = "Always"
 
           env {
             name  = "SPRING_PROFILES_ACTIVE"
@@ -126,9 +129,9 @@ resource "kubernetes_deployment" "dispatcher_service" {
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler_v1" "catalog_service_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler_v1" "dispatcher_service_hpa" {
   metadata {
-    name = "catalog-service-hpa"
+    name = "dispatcher-service-hpa"
   }
   spec {
     max_replicas = 2
@@ -136,19 +139,19 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "catalog_service_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.catalog_service_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.dispatcher_service_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 50
   }
 }
 
-resource "kubernetes_service_v1" "catalog_service_service" {
+resource "kubernetes_service_v1" "dispatcher_service_service" {
   metadata {
-    name = "catalog-service"
+    name = "dispatcher-service"
   }
   spec {
     selector = {
-      app = "catalog-service"
+      app = "dispatcher-service"
     }
     port {
       port = 9003
