@@ -32,7 +32,9 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
         container {
           image = "quay.io/keycloak/keycloak:21.1.1"
           name  = "keycloak-server"
-          args  = ["start-dev"]
+          args  = ["start-dev", "--import-realm"]
+          #TODO google keywords quay.io/keycloak/keycloak:21.1.1 import realm
+          #TODO: https://keycloak.discourse.group/t/keycloak-17-docker-container-how-to-export-import-realm-import-must-be-done-on-container-startup/13619/22?page=2
           #image_pull_policy = "always"  # Defaults to Always so we can comment this
           port {
             container_port = 8080
