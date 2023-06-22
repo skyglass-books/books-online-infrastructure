@@ -20,7 +20,7 @@ resource "kubernetes_ingress_v1" "ingress" {
     default_backend {
      
       service {
-        name = "keycloak-server"
+        name = "polar-keycloak"
         port {
           number = 8080
         }
@@ -34,9 +34,29 @@ resource "kubernetes_ingress_v1" "ingress" {
         path {
           backend {
             service {
-              name = "keycloak-server"
+              name = "polar-keycloak"
               port {
                 number = 8080
+              }
+            }
+          }
+
+          path = "/"
+          path_type = "Prefix"
+        }
+      }
+    }
+
+    rule {
+      host = "books-api.greeta.net"
+      http {
+
+        path {
+          backend {
+            service {
+              name = "edge-service"
+              port {
+                number = 9000
               }
             }
           }
@@ -54,9 +74,9 @@ resource "kubernetes_ingress_v1" "ingress" {
         path {
           backend {
             service {
-              name = "edge-service"
+              name = "books-ui"
               port {
-                number = 80
+                number = 9004
               }
             }
           }
@@ -65,6 +85,6 @@ resource "kubernetes_ingress_v1" "ingress" {
           path_type = "Prefix"
         }
       }
-    }
+    }    
   }
 }

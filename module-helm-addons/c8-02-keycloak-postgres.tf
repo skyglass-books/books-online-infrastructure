@@ -21,12 +21,6 @@ resource "kubernetes_deployment_v1" "keycloak_postgres_deployment" {
       }
       spec {
         volume {
-          name = "keycloak-postgres-persistent-storage"
-          persistent_volume_claim {
-            claim_name = "ebs-pv-claim"
-          } 
-        }
-        volume {
           name = "keycloak-postgres-dbcreation-script"
           config_map {
             name = kubernetes_config_map_v1.keycloak_postgres_config_map.metadata.0.name 
@@ -42,10 +36,6 @@ resource "kubernetes_deployment_v1" "keycloak_postgres_deployment" {
           env {
             name = "POSTGRES_PASSWORD"
             value = "postgres"
-          }
-          volume_mount {
-            name = "keycloak-postgres-persistent-storage"
-            mount_path = "/var/lib/postgres"
           }
           volume_mount {
             name = "keycloak-postgres-dbcreation-script"

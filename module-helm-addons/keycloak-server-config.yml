@@ -1,10 +1,4 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: keycloak-server-config
-data:
-  realm-config.json: |
-    {
+{
       "id": "879889b2-df11-4724-91cc-e1a1c2c37fed",
       "realm": "PolarBookshop",
       "notBefore": 0,
@@ -717,7 +711,7 @@ data:
               "enabled": true,
               "alwaysDisplayInConsole": false,
               "clientAuthenticatorType": "client-secret",
-              "secret": "polar-keycloak-secret",
+              "secret": "1b1b19599c2264fd218c",
               "redirectUris": [
                   "*"
               ],
@@ -2280,4 +2274,4 @@ data:
       "clientPolicies": {
           "policies": []
       }
-    }
+}

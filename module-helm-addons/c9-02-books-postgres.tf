@@ -1,9 +1,9 @@
-resource "kubernetes_config_map_v1" "books_postgres_config" {
+resource "kubernetes_config_map_v1" "polar_postgres_config" {
   metadata {
-    name = "books-postgres-config"
+    name = "polar-postgres-config"
 
     labels = {
-      db = "books-postgres"
+      db = "polar-postgres"
     }
   }
 
@@ -15,32 +15,32 @@ resource "kubernetes_config_map_v1" "books_postgres_config" {
   }
 }
 
-resource "kubernetes_deployment_v1" "books_postgres" {
+resource "kubernetes_deployment_v1" "polar_postgres_deployment" {
   metadata {
-    name = "books-postgres"
+    name = "polar-postgres"
 
     labels = {
-      db = "books-postgres"
+      db = "polar-postgres"
     }
   }
 
   spec {
     selector {
       match_labels = {
-        db = "books-postgres"
+        db = "polar-postgres"
       }
     }
 
     template {
       metadata {
         labels = {
-          db = "books-postgres"
+          db = "polar-postgres"
         }
       }
 
       spec {
         container {
-          name  = "books-postgres"
+          name  = "polar-postgres"
           image = "postgres:14.4"
 
           env {
@@ -54,12 +54,12 @@ resource "kubernetes_deployment_v1" "books_postgres" {
           }
 
           resources {
-            requests {
+            requests = {
               cpu    = "100m"
               memory = "60Mi"
             }
 
-            limits {
+            limits = {
               cpu    = "200m"
               memory = "120Mi"
             }
@@ -67,15 +67,15 @@ resource "kubernetes_deployment_v1" "books_postgres" {
 
           volume_mount {
             mount_path = "/docker-entrypoint-initdb.d"
-            name       = "books-postgres-config-volume"
+            name       = "polar-postgres-config-volume"
           }
         }
 
         volume {
-          name = "books-postgres-config-volume"
+          name = "polar-postgres-config-volume"
 
           config_map {
-            name = kubernetes_config_map_v1.books_postgres_config.metadata[0].name
+            name = kubernetes_config_map_v1.polar_postgres_config.metadata[0].name
           }
         }
       }
@@ -83,12 +83,12 @@ resource "kubernetes_deployment_v1" "books_postgres" {
   }
 }
 
-resource "kubernetes_service_v1" "books_postgres" {
+resource "kubernetes_service_v1" "polar_postgres" {
   metadata {
-    name = "books-postgres"
+    name = "polar-postgres"
 
     labels = {
-      db = "books-postgres"
+      db = "polar-postgres"
     }
   }
 
@@ -96,7 +96,7 @@ resource "kubernetes_service_v1" "books_postgres" {
     type = "ClusterIP"
 
     selector = {
-      db = "books-postgres"
+      db = "polar-postgres"
     }
 
     port {
@@ -107,10 +107,10 @@ resource "kubernetes_service_v1" "books_postgres" {
   }
 }
 
-# Resource: Books Postgres Horizontal Pod Autoscaler
-resource "kubernetes_horizontal_pod_autoscaler_v1" "books_postgres_hpa" {
+# Resource: Polar Postgres Horizontal Pod Autoscaler
+resource "kubernetes_horizontal_pod_autoscaler_v1" "polar_postgres_hpa" {
   metadata {
-    name = "books-postgres-hpa"
+    name = "polar-postgres-hpa"
   }
   spec {
     max_replicas = 2
@@ -118,7 +118,7 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "books_postgres_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.books_postgres_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.polar_postgres_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 60
   }

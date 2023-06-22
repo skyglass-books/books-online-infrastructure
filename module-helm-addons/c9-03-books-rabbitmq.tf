@@ -1,6 +1,6 @@
-resource "kubernetes_config_map" "books_rabbitmq_config" {
+resource "kubernetes_config_map_v1" "polar_rabbitmq_config" {
   metadata {
-    name = "books-rabbitmq-config"
+    name = "polar-rabbitmq-config"
     labels = {
       db = "polar-rabbitmq"
     }
@@ -15,39 +15,39 @@ resource "kubernetes_config_map" "books_rabbitmq_config" {
   }
 }
 
-resource "kubernetes_deployment" "books_rabbitmq" {
+resource "kubernetes_deployment_v1" "polar_rabbitmq_deployment" {
   metadata {
-    name = "books-rabbitmq"
+    name = "polar-rabbitmq"
     labels = {
-      db = "books-rabbitmq"
+      db = "polar-rabbitmq"
     }
   }
 
   spec {
     selector {
       match_labels = {
-        db = "books-rabbitmq"
+        db = "polar-rabbitmq"
       }
     }
 
     template {
       metadata {
         labels = {
-          db = "books-rabbitmq"
+          db = "polar-rabbitmq"
         }
       }
 
       spec {
         container {
-          name  = "books-rabbitmq"
+          name  = "polar-rabbitmq"
           image = "rabbitmq:3.10-management"
 
           resources {
-            requests {
+            requests = {
               cpu    = "100m"
               memory = "100Mi"
             }
-            limits {
+            limits = {
               cpu    = "200m"
               memory = "150Mi"
             }
@@ -55,15 +55,15 @@ resource "kubernetes_deployment" "books_rabbitmq" {
 
           volume_mount {
             mount_path = "/etc/rabbitmq"
-            name       = "books-rabbitmq-config-volume"
+            name       = "polar-rabbitmq-config-volume"
           }
         }
 
         volume {
-          name = "books-rabbitmq-config-volume"
+          name = "polar-rabbitmq-config-volume"
 
           config_map {
-            name = kubernetes_config_map.books_rabbitmq_config.metadata.0.name
+            name = kubernetes_config_map_v1.polar_rabbitmq_config.metadata.0.name
           }
         }
       }
@@ -71,11 +71,11 @@ resource "kubernetes_deployment" "books_rabbitmq" {
   }
 }
 
-resource "kubernetes_service" "books_rabbitmq" {
+resource "kubernetes_service_v1" "polar_rabbitmq" {
   metadata {
-    name = "books-rabbitmq"
+    name = "polar-rabbitmq"
     labels = {
-      db = "books-rabbitmq"
+      db = "polar-rabbitmq"
     }
   }
 
@@ -83,7 +83,7 @@ resource "kubernetes_service" "books_rabbitmq" {
     type = "ClusterIP"
 
     selector = {
-      db = "books-rabbitmq"
+      db = "polar-rabbitmq"
     }
 
     port {
@@ -102,10 +102,10 @@ resource "kubernetes_service" "books_rabbitmq" {
   }
 }
 
-# Resource: Books RabbitMQ Horizontal Pod Autoscaler
-resource "kubernetes_horizontal_pod_autoscaler_v1" "books_rabbitmq_hpa" {
+# Resource: Polar RabbitMQ Horizontal Pod Autoscaler
+resource "kubernetes_horizontal_pod_autoscaler_v1" "polar_rabbitmq_hpa" {
   metadata {
-    name = "books-rabbitmq-hpa"
+    name = "polar-rabbitmq-hpa"
   }
   spec {
     max_replicas = 2
@@ -113,7 +113,7 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "books_rabbitmq_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.books_rabbitmq_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.polar_rabbitmq_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 60
   }

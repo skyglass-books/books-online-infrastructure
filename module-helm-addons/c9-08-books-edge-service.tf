@@ -11,14 +11,13 @@ resource "kubernetes_config_map_v1" "edge_config" {
     "application-prod.yml" = file("${path.module}/app-conf/edge-prod.yml")
   }
 
-  merge_behavior = "merge"
 }
 
 
-resource "kubernetes_deployment_v1" "edge_service" {
-  depends_on = [kubernetes_deployment_v1.books_postgres_deployment,
-        kubernetes_deployment_v1.books_rabbitmq_deployment,
-        kubernetes_deployment_v1.books_redis_deployment]
+resource "kubernetes_deployment_v1" "edge_service_deployment" {
+  depends_on = [kubernetes_deployment_v1.polar_postgres_deployment,
+        kubernetes_deployment_v1.polar_rabbitmq_deployment,
+        kubernetes_deployment_v1.polar_redis_deployment]
   metadata {
     name = "edge-service"
     labels = {
@@ -50,7 +49,7 @@ resource "kubernetes_deployment_v1" "edge_service" {
       spec {
         container {
           name  = "edge-service"
-          image = "ghcr.io/skyglass-books/edge-service:a3ce4ab44e41d2e6eed02d3c3b64e91a855b49f5"
+          image = "ghcr.io/skyglass-books/edge-service:6617c515e62038dabf8e08666ed3d9a0472f1224"
           image_pull_policy = "Always"
 
           lifecycle {
@@ -62,17 +61,17 @@ resource "kubernetes_deployment_v1" "edge_service" {
           }
 
           resources {
-            requests {
+            requests = {
               memory = "756Mi"
               cpu    = "0.1"
             }
-            limits {
+            limits = {
               memory = "756Mi"
               cpu    = "2"
             }
           }          
 
-          ports {
+          port {
             container_port = 9000
           }
 
@@ -82,7 +81,7 @@ resource "kubernetes_deployment_v1" "edge_service" {
           }          
 
           env {
-            name  = "edge_SERVICE_URL"
+            name  = "EDGE_SERVICE_URL"
             value = "http://edge-service"
           }
 
@@ -128,7 +127,7 @@ resource "kubernetes_deployment_v1" "edge_service" {
             mount_path = "/workspace/secrets/keycloak-client"
           }
           volume_mount {
-            name      = "keycloak-issuer-client-secret-volume"
+            name      = "keycloak-issuer-secret-volume"
             mount_path = "/workspace/secrets/keycloak-issuer"
           }
 
@@ -154,9 +153,9 @@ resource "kubernetes_deployment_v1" "edge_service" {
           }
         }
         volume {
-          name = "keycloak-issuer-client-secret-volume"
+          name = "keycloak-issuer-secret-volume"
           secret {
-            secret_name = "keycloak-issuer-client-secret"
+            secret_name = "keycloak-issuer-secret"
           }
         }        
       }

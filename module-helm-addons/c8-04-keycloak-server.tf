@@ -30,7 +30,7 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
           }
         }
         container {
-          image = "quay.io/keycloak/keycloak:20.0.3"
+          image = "quay.io/keycloak/keycloak:21.1.1"
           name  = "keycloak-server"
           args  = ["start-dev"]
           #image_pull_policy = "always"  # Defaults to Always so we can comment this
@@ -52,7 +52,7 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
           env {
             name = "KC_DB"
             value = "postgres"
-          }
+          }        
           env {
             name = "KC_DB_URL_HOST"
             value = "keycloak-postgres"
@@ -81,6 +81,18 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
             name = "KC_PROXY"
             value = "edge"
           }
+          # env {
+          #   name = "KC_HTTP_ENABLED"
+          #   value = "true"
+          # }
+          # env {
+          #   name = "KC_HOSTNAME_STRICT_HTTPS"
+          #   value = "false"
+          # }
+          # env {
+          #   name = "KC_HOSTNAME_STRICT"
+          #   value = "false"
+          # }       
 
           volume_mount {
             name = "keycloak-server-config-volume"
@@ -111,7 +123,7 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "keycloak_server_hpa" {
 
 resource "kubernetes_service_v1" "keycloak_server_service" {
   metadata {
-    name = "keycloak-server"
+    name = "polar-keycloak"
   }
   spec {
     selector = {

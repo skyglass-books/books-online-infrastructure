@@ -10,15 +10,13 @@ resource "kubernetes_config_map_v1" "order_config" {
     "application.yml" = file("${path.module}/app-conf/order.yml")
     "application-prod.yml" = file("${path.module}/app-conf/order-prod.yml")
   }
-
-  merge_behavior = "merge"
 }
 
 
-resource "kubernetes_deployment_v1" "order_service" {
-  depends_on = [kubernetes_deployment_v1.books_postgres_deployment,
-                kubernetes_deployment_v1.books_rabbitmq_deployment,
-                kubernetes_deployment_v1.books_redis_deployment]    
+resource "kubernetes_deployment_v1" "order_service_deployment" {
+  depends_on = [kubernetes_deployment_v1.polar_postgres_deployment,
+                kubernetes_deployment_v1.polar_rabbitmq_deployment,
+                kubernetes_deployment_v1.polar_redis_deployment]    
   metadata {
     name = "order-service"
 
@@ -61,11 +59,11 @@ resource "kubernetes_deployment_v1" "order_service" {
           }
 
           resources {
-            requests {
+            requests = {
               memory = "756Mi"
               cpu    = "0.1"
             }
-            limits {
+            limits = {
               memory = "756Mi"
               cpu    = "2"
             }
@@ -79,7 +77,7 @@ resource "kubernetes_deployment_v1" "order_service" {
             }
           }
 
-          ports {
+          port {
             container_port = 9002
           }
 
@@ -117,7 +115,7 @@ resource "kubernetes_deployment_v1" "order_service" {
           }
 
           volume_mount {
-            name       = "keycloak-issuer-resourceserver-secret-volume"
+            name       = "keycloak-issuer-secret-volume"
             mount_path = "/workspace/secrets/keycloak"
           }          
         }
@@ -146,10 +144,10 @@ resource "kubernetes_deployment_v1" "order_service" {
         }
 
         volume {
-          name = "keycloak-issuer-resourceserver-secret-volume"
+          name = "keycloak-issuer-secret-volume"
 
           secret {
-            secret_name = "keycloak-issuer-resourceserver-secret"
+            secret_name = "keycloak-issuer-secret"
           }
         }        
       }

@@ -1,5 +1,4 @@
 resource "kubernetes_deployment_v1" "books_ui_deployment" {
-  depends_on = [kubernetes_deployment_v1.catalog_service_deployment]
   metadata {
     name = "books-ui"
     labels = {
@@ -43,12 +42,12 @@ resource "kubernetes_deployment_v1" "books_ui_deployment" {
           } 
 
           resources {
-            requests {
+            requests = {
               memory = "128Mi"
               cpu    = "0.1"
             }
 
-            limits {
+            limits = {
               memory = "512Mi"
               cpu    = "2"
             }

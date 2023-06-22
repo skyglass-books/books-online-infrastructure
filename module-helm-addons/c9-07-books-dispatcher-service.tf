@@ -11,14 +11,13 @@ resource "kubernetes_config_map_v1" "dispatcher_config" {
     "application-prod.yml" = file("${path.module}/app-conf/dispatcher-prod.yml")
   }
 
-  merge_behavior = "merge"
 }
 
 
-resource "kubernetes_deployment_v1" "dispatcher_service" {
-  depends_on = [kubernetes_deployment_v1.books_postgres_deployment,
-                kubernetes_deployment_v1.books_rabbitmq_deployment,
-                kubernetes_deployment_v1.books_redis_deployment]    
+resource "kubernetes_deployment_v1" "dispatcher_service_deployment" {
+  depends_on = [kubernetes_deployment_v1.polar_postgres_deployment,
+                kubernetes_deployment_v1.polar_rabbitmq_deployment,
+                kubernetes_deployment_v1.polar_redis_deployment]    
   metadata {
     name = "dispatcher-service"
     labels = {
@@ -59,12 +58,12 @@ resource "kubernetes_deployment_v1" "dispatcher_service" {
           }
 
           resources {
-            requests {
+            requests = {
               memory = "756Mi"
               cpu    = "0.1"
             }
 
-            limits {
+            limits = {
               memory = "756Mi"
               cpu    = "2"
             }
@@ -78,7 +77,7 @@ resource "kubernetes_deployment_v1" "dispatcher_service" {
             }
           }
 
-          ports {
+          port {
             container_port = 9003
           }
 
