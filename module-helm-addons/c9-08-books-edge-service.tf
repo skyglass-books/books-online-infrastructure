@@ -149,7 +149,7 @@ resource "kubernetes_deployment_v1" "edge_service_deployment" {
         volume {
           name = "keycloak-client-credentials-volume"
           secret {
-            secret_name = "polar-keycloak-client-credentials"
+            secret_name = "keycloak-server-client-credentials"
           }
         }
         volume {

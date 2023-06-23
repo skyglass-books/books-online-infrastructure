@@ -79,6 +79,12 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
             name = "KC_HOSTNAME"
             value = "keycloak.greeta.net"
           }
+
+          env {
+            name = "PROXY_ADDRESS_FORWARDING"
+            value = "true"
+          }
+          
           env {
             name = "KC_PROXY"
             value = "edge"
@@ -125,14 +131,16 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "keycloak_server_hpa" {
 
 resource "kubernetes_service_v1" "keycloak_server_service" {
   metadata {
-    name = "polar-keycloak"
+    name = "keycloak-server"
   }
   spec {
     selector = {
       app = "keycloak-server"
     }
     port {
-      port = 8080
+      protocol    = "TCP"
+      port        = 8080
+      target_port = 8080
     }
   }
 }

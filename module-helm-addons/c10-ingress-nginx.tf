@@ -20,7 +20,7 @@ resource "kubernetes_ingress_v1" "ingress" {
     default_backend {
      
       service {
-        name = "polar-keycloak"
+        name = "keycloak-server"
         port {
           number = 8080
         }
@@ -34,7 +34,7 @@ resource "kubernetes_ingress_v1" "ingress" {
         path {
           backend {
             service {
-              name = "polar-keycloak"
+              name = "keycloak-server"
               port {
                 number = 8080
               }

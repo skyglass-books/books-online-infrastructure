@@ -29,7 +29,7 @@ resource "kubernetes_secret_v1" "polar_redis_credentials" {
   }
 
   data = {
-    "spring.redis.host"     = "polar-redis"
+    "spring.redis.host"     = "polar-redis.default.svc.cluster.local"
     "spring.redis.port"     = "6379"
     "spring.redis.username" = "default"
   }
@@ -41,7 +41,7 @@ resource "kubernetes_secret_v1" "polar_rabbitmq_credentials" {
   }  
 
   data = {
-    "spring.rabbitmq.host"     = "polar-rabbitmq.rabbitmq-system.svc.cluster.local"
+    "spring.rabbitmq.host"     = "polar-rabbitmq.default.svc.cluster.local"
     "spring.rabbitmq.port"     = "5672"
     "spring.rabbitmq.username" = "user"
     "spring.rabbitmq.password" = "password"
@@ -50,7 +50,7 @@ resource "kubernetes_secret_v1" "polar_rabbitmq_credentials" {
 
 resource "kubernetes_secret_v1" "polar_keycloak_client_credentials" {
   metadata {
-    name = "polar-keycloak-client-credentials"
+    name = "keycloak-server-client-credentials"
   }
 
   data = {
@@ -64,6 +64,6 @@ resource "kubernetes_secret_v1" "keycloak_issuer_secret" {
   }
 
   data = {
-    "spring.keycloak.server-url" = "http://polar-keycloak:8080"
+    "spring.keycloak.server-url" = "http://keycloak-server:8080"
   }
 }

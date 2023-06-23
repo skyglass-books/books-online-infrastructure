@@ -1,6 +1,7 @@
 spring:
   redis:
-    host: polar-redis
+    host: polar-redis.default.svc.cluster.local
+    port: 6379
     username: user
     password: default
   security:
@@ -8,4 +9,4 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://polar-keycloak/realms/PolarBookshop
+            issuer-uri: http://keycloak-server:8080/realms/PolarBookshop

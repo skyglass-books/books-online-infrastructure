@@ -1,10 +1,9 @@
 # Resource: Config Map
-resource "kubernetes_config_map_v1" "keycloak_server_configmap" {
-  metadata {
-    name = "keycloak-server-config"
-  }
+ data "kubectl_file_documents" "keyloak_server_config_yaml" {
+  content = file("${path.module}/keycloak-server-config.yml")
+}
 
-  data = {
-  "realm-config.json" = "${file("${path.module}/keycloak-server-config.yml")}"
-  }
-} 
+resource "kubectl_manifest" "keycloak_server_configmap" {
+    for_each  = data.kubectl_file_documents.keyloak_server_config_yaml.manifests
+    yaml_body = each.value
+}

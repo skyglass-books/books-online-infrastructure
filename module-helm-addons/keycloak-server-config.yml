@@ -1,4 +1,10 @@
-{
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-server-config
+data:
+  realm-config.json: |
+    {
       "id": "879889b2-df11-4724-91cc-e1a1c2c37fed",
       "realm": "PolarBookshop",
       "notBefore": 0,
@@ -2274,4 +2280,4 @@
       "clientPolicies": {
           "policies": []
       }
-}
+    }
