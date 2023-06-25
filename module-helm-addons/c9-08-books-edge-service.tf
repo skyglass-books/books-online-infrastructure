@@ -49,7 +49,7 @@ resource "kubernetes_deployment_v1" "edge_service_deployment" {
       spec {
         container {
           name  = "edge-service"
-          image = "ghcr.io/skyglass-books/edge-service:6617c515e62038dabf8e08666ed3d9a0472f1224"
+          image = "ghcr.io/skyglass-books/edge-service:3052ea382b4d6bbc77957705a58ee270407812d6"
           image_pull_policy = "Always"
 
           lifecycle {

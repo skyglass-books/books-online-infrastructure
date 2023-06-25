@@ -75,32 +75,11 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
             name = "KC_DB_PASSWORD"
             value = "postgres"
           }  
-          env {
-            name = "KC_HOSTNAME"
-            value = "keycloak.greeta.net"
-          }
-
-          env {
-            name = "PROXY_ADDRESS_FORWARDING"
-            value = "true"
-          }
           
           env {
             name = "KC_PROXY"
             value = "edge"
-          }
-          # env {
-          #   name = "KC_HTTP_ENABLED"
-          #   value = "true"
-          # }
-          # env {
-          #   name = "KC_HOSTNAME_STRICT_HTTPS"
-          #   value = "false"
-          # }
-          # env {
-          #   name = "KC_HOSTNAME_STRICT"
-          #   value = "false"
-          # }       
+          }  
 
           volume_mount {
             name = "keycloak-server-config-volume"
@@ -138,9 +117,7 @@ resource "kubernetes_service_v1" "keycloak_server_service" {
       app = "keycloak-server"
     }
     port {
-      protocol    = "TCP"
       port        = 8080
-      target_port = 8080
     }
   }
 }

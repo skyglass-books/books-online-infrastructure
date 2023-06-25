@@ -4,9 +4,9 @@ spring:
     port: 6379
     username: user
     password: default
-  security:
-    oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://keycloak-server:8080/realms/PolarBookshop
+  # security:
+  #   oauth2:
+  #     client:
+  #       provider:
+  #         keycloak:
+  #           issuer-uri: http://keycloak-server:8080/realms/PolarBookshop
