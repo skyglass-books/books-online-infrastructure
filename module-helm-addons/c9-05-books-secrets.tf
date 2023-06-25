@@ -41,7 +41,7 @@ resource "kubernetes_secret_v1" "polar_rabbitmq_credentials" {
   }  
 
   data = {
-    "spring.rabbitmq.host"     = "polar-rabbitmq.default.svc.cluster.local"
+    "spring.rabbitmq.host"     = "polar-rabbitmq"
     "spring.rabbitmq.port"     = "5672"
     "spring.rabbitmq.username" = "user"
     "spring.rabbitmq.password" = "password"

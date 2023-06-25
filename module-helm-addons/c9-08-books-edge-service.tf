@@ -81,18 +81,18 @@ resource "kubernetes_deployment_v1" "edge_service_deployment" {
           }          
 
           env {
-            name  = "EDGE_SERVICE_URL"
-            value = "http://edge-service"
+            name  = "CATALOG_SERVICE_URL"
+            value = "http://catalog-service:9001"
           }
 
           env {
             name  = "ORDER_SERVICE_URL"
-            value = "http://order-service"
+            value = "http://order-service:9002"
           }
 
           env {
             name  = "SPA_URL"
-            value = "http://polar-ui"
+            value = "http://polar-ui:9004"
           }
 
           liveness_probe {

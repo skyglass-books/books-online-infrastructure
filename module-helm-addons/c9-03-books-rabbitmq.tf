@@ -8,8 +8,8 @@ resource "kubernetes_config_map_v1" "polar_rabbitmq_config" {
 
   data = {
     "rabbitmq.conf" = <<EOF
-      default_user = "user"
-      default_pass = "password"
+      default_user = user
+      default_pass = password
       vm_memory_high_watermark.relative = 1.0
     EOF
   }
@@ -40,7 +40,7 @@ resource "kubernetes_deployment_v1" "polar_rabbitmq_deployment" {
       spec {
         container {
           name  = "polar-rabbitmq"
-          image = "rabbitmq:3.10-management"
+          image = "rabbitmq:3.10-management"         
 
           resources {
             requests = {
