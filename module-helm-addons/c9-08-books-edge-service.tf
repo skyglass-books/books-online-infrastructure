@@ -92,7 +92,7 @@ resource "kubernetes_deployment_v1" "edge_service_deployment" {
 
           env {
             name  = "SPA_URL"
-            value = "http://polar-ui:9004"
+            value = "http://books-ui:9004"
           }
 
           liveness_probe {

@@ -4,9 +4,14 @@ spring:
     port: 6379
     username: user
     password: default
-  # security:
-  #   oauth2:
-  #     client:
-  #       provider:
-  #         keycloak:
-  #           issuer-uri: http://keycloak-server:8080/realms/PolarBookshop
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak-server:8080/realms/PolarBookshop
+            authorization-uri: https://keycloak.greeta.net/realms/PolarBookshop/protocol/openid-connect/auth
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak.greeta.net/realms/PolarBookshop
+          jwk-set-uri: https://keycloak.greeta.net/protocol/openid-connect/certs

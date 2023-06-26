@@ -74,7 +74,7 @@ resource "kubernetes_deployment_v1" "keycloak_server" {
           env {
             name = "KC_DB_PASSWORD"
             value = "postgres"
-          }  
+          }          
           
           env {
             name = "KC_PROXY"
