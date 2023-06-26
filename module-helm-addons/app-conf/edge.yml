@@ -7,11 +7,17 @@ spring:
   security:
     oauth2:
       client:
+        registration:
+          keycloak:
+            # redirect-uri: https://books-api.greeta.net/login/oauth2/code/keycloak
+            client-secret: 1b1b19599c2264fd218c
+
         provider:
           keycloak:
             issuer-uri: http://keycloak-server:8080/realms/PolarBookshop
             authorization-uri: https://keycloak.greeta.net/realms/PolarBookshop/protocol/openid-connect/auth
-      resourceserver:
-        jwt:
-          issuer-uri: https://keycloak.greeta.net/realms/PolarBookshop
-          jwk-set-uri: https://keycloak.greeta.net/protocol/openid-connect/certs
+            # token-uri: https://keycloak.greeta.net/realms/PolarBookshop/protocol/openid-connect/token
+      # resourceserver:
+      #   jwt:
+      #     issuer-uri: https://keycloak.greeta.net/realms/PolarBookshop
+      #     jwk-set-uri: https://keycloak.greeta.net/protocol/openid-connect/certs

@@ -49,7 +49,7 @@ resource "kubernetes_deployment_v1" "edge_service_deployment" {
       spec {
         container {
           name  = "edge-service"
-          image = "ghcr.io/skyglass-books/edge-service:3052ea382b4d6bbc77957705a58ee270407812d6"
+          image = "ghcr.io/skyglass-books/edge-service:0ae5e0b7d012b77a5bbe8c8465a3ef2e3ae88312"
           image_pull_policy = "Always"
 
           lifecycle {
@@ -175,7 +175,7 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "edge_service_hpa" {
       kind = "Deployment"
       name = kubernetes_deployment_v1.edge_service_deployment.metadata[0].name 
     }
-    target_cpu_utilization_percentage = 50
+    target_cpu_utilization_percentage = 80
   }
 }
 
