@@ -50,7 +50,7 @@ resource "kubernetes_deployment_v1" "catalog_service_deployment" {
       spec {
         container {
           name = "catalog-service"
-          image = "ghcr.io/skyglass-books/catalog-service:c0b3de08c2b72df23103ad3ba4ee366cbc8f7e41"
+          image = "ghcr.io/skyglass-books/catalog-service:827ad8cb349d7c41edc24d3b0eeb73866de9da71"
           image_pull_policy = "Always"
 
           env {

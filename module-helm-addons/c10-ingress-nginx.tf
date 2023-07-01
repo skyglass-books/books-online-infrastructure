@@ -11,6 +11,12 @@ resource "kubernetes_ingress_v1" "ingress" {
           return 403;
         }
       EOF
+      # "nginx.ingress.kubernetes.io/proxy-set-header" = <<EOF
+      #   Host $host;
+      #   X-Real-IP $remote_addr;
+      #   X-Forwarded-For $proxy_add_x_forwarded_for;
+      #   X-Forwarded-Proto $scheme;
+      # EOF      
     }
   }
 
@@ -48,7 +54,7 @@ resource "kubernetes_ingress_v1" "ingress" {
     }
 
     rule {
-      host = "books-api.greeta.net"
+      host = "books.greeta.net"
       http {
 
         path {
@@ -66,25 +72,6 @@ resource "kubernetes_ingress_v1" "ingress" {
         }
       }
     }
-
-    rule {
-      host = "books.greeta.net"
-      http {
-
-        path {
-          backend {
-            service {
-              name = "books-ui"
-              port {
-                number = 9004
-              }
-            }
-          }
-
-          path = "/"
-          path_type = "Prefix"
-        }
-      }
-    }    
+    
   }
 }
